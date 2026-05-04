@@ -10,6 +10,7 @@ This is a completely rewritten Apartment Resource for Pulsar Framework. It offer
 - Each week players get charged $2,000 for rent via Pulsar-Finance (directly one week after assignment).
 
 
-# THIS IS STILL A WIP. If you encounter any issues please make an issues report, or if you have a FIX or want to add something to this script make a Pull Request.
+# THIS IS STILL A WIP.
+- If you encounter any issues please make an issues report, or if you have a FIX or want to add something to this script make a Pull Request.
 
 - If you enjoy this, please leave a star, thanksss :)
