@@ -1,0 +1,8 @@
+# Installation Instructions -
+
+- Replace your current pulsar-apartments resource with this one (this is still a W.I.P so I would keep the original just incase until full release).
+- Run the file "apartment_assignments.sql" in HeidiSQL so it adds the apartments to your server to be assigned.
+
+- ... THATS IT! You're done! I hope you enjoy this, as it took quite a bit of time to make!
+
+- I'm always open to PR's so if there is something you want to add or think needs adjusted, don't hesitate to throw a PR up or tag me in the discord thread!
