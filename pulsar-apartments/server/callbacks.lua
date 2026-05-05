@@ -93,7 +93,17 @@ function RegisterCallbacks()
 	end)
 
 	exports["pulsar-core"]:RegisterServerCallback("Apartment:RequestEntry", function(source, data, cb)
-		cb(exports[RESOURCE]:RequestsCreate(source, data.target, data.inZone))
+		local aptId = tonumber(data.aptId)
+		if not aptId then
+			cb(false)
+			return
+		end
+		local ownerSID = GetApartmentOwner(aptId)
+		if not ownerSID then
+			cb(false)
+			return
+		end
+		cb(exports[RESOURCE]:RequestsCreate(source, ownerSID, string.format("apt-%s", aptId)))
 	end)
 
 	exports["pulsar-core"]:RegisterServerCallback("Apartment:RequestApartment", function(source, data, cb)
