@@ -8,6 +8,7 @@ local _insideApartment = nil
 local _showerParticles = {}
 local _isShowering = false
 local _spawnedFurniture = {}
+local _apartmentBlips = {}
 
 local function SpawnRoomFurniture(furniture)
 	if not furniture then return end
@@ -281,6 +282,34 @@ local function BuildReceptionTarget()
 			SetModelAsNoLongerNeeded(modelHash)
 			exports.ox_target:addLocalEntity(ped, targetOptions)
 			table.insert(_receptionPeds, ped)
+		end
+	end
+end
+
+local function ClearApartmentBlips()
+	for aptId, blipId in pairs(_apartmentBlips) do
+		exports["pulsar-blips"]:Remove(blipId)
+	end
+	_apartmentBlips = {}
+end
+
+local function BuildApartmentBlips()
+	ClearApartmentBlips()
+
+	local apartments = GlobalState["Apartments"] or {}
+	local seenBuildings = {}
+
+	for _, aptId in ipairs(apartments) do
+		local apt = GlobalState[string.format("Apartment:%s", aptId)]
+		if apt and apt.coords and apt.buildingName and not seenBuildings[apt.buildingName] then
+			local blipId = string.format("building_%s", apt.buildingName)
+			local label = apt.buildingName
+			if Config.HotelRooms and Config.HotelRooms[apt.buildingName] and Config.HotelRooms[apt.buildingName].label then
+				label = Config.HotelRooms[apt.buildingName].label
+			end
+			exports["pulsar-blips"]:Add(blipId, label, apt.coords, 475, 2, 0.8, 2, "apartments")
+			_apartmentBlips[apt.buildingName] = blipId
+			seenBuildings[apt.buildingName] = true
 		end
 	end
 end
@@ -702,17 +731,20 @@ AddEventHandler("onClientResourceStart", function(resource)
 	if resource == RESOURCE then
 		Wait(1500)
 		BuildWorldTargets()
+		BuildApartmentBlips()
 	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
 	Wait(1000)
 	BuildWorldTargets()
+	BuildApartmentBlips()
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
 	ClearInteriorZones()
 	ClearRoomFurniture()
+	ClearApartmentBlips()
 	_insideApartment = nil
 	_nearApartment = nil
 end)
