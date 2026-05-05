@@ -115,13 +115,11 @@ local function BuildRoomTargets()
 							return not LocalPlayer.state.isDead and CharacterApartment() ~= aptId
 						end,
 						onSelect = function()
-							exports["pulsar-hud"]:InputShow("Request Entry", "Unit Number (Owner State ID)", {
-								{
-									id = "unit",
-									type = "number",
-									options = {},
-								},
-							}, "Apartment:Client:DoRequestEntry", { id = string.format("apt-%s", aptId) })
+							exports["pulsar-core"]:ServerCallback("Apartment:RequestEntry", {
+								aptId = aptId,
+							}, function(success)
+								Notify(success and "success" or "error", success and "Entry request sent" or "Unable to request entry")
+							end)
 						end,
 					},
 					{
@@ -367,17 +365,6 @@ local function BuildInteriorTargets(aptId, unit)
 	end
 
 	local locations = apt.interior.locations
-	_interiorZones.exit = AddBoxTarget(string.format("apt-%s-exit", aptId), locations.exit, {
-		{
-			name = "apt_exit",
-			label = "Exit",
-			icon = "fas fa-door-open",
-			distance = 2.0,
-			onSelect = function()
-				exports[RESOURCE]:Exit()
-			end,
-		},
-	})
 
 	_interiorZones.stash = AddBoxTarget(string.format("apt-%s-stash", aptId), locations.stash, {
 		{
